@@ -1,34 +1,32 @@
 package com.engage.expenses;
 
-import com.engage.expenses.model.Expense;
+import com.engage.expenses.controller.ExpensesController;
+import com.engage.expenses.repository.ExpensesRepository;
 import com.engage.shared.JsonMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.google.common.collect.Lists.newArrayList;
 import static spark.Spark.*;
 
 public class Main {
 
     public static final String APPLICATION_JSON = "application/json";
+    public static final int PORT = 8080;
 
-    public static void main(String[] args) throws JsonProcessingException {
-
+    public static void main(String[] args) {
         JsonMapper jsonMapper = new JsonMapper();
 
-        staticFileLocation("static");
-        port(8080);
+        externalStaticFileLocation("static");
+        port(PORT);
 
-        List<Expense> expenses = newArrayList(new Expense(1L, LocalDate.now(), BigDecimal.valueOf(10.1), "Why not?"));
+        new Main(
+                new ExpensesController(
+                        jsonMapper,
+                        new ExpensesRepository()
+                ));
+    }
 
-        get("/app/expenses", APPLICATION_JSON, (req, res) -> expenses, jsonMapper::toJson);
-
+    public Main(ExpensesController expensesController) {
         after((req, res) -> {
             res.type("application/json");
         });
     }
-
 }
