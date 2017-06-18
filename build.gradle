@@ -1,0 +1,57 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version '2.0.0'
+    id "com.moowork.gulp" version "0.13"
+    id "com.moowork.node" version "0.13"
+    id "org.flywaydb.flyway" version '4.2.0'
+}
+
+apply plugin: 'java'
+
+group 'com.engage'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources", "static"
+        }
+    }
+}
+
+task buildUI(type: Copy) {
+    dependsOn gulp_dev
+    from 'static'
+    into 'build/resources/main/static'
+}
+
+flyway {
+    url = dbUrl
+    user = dbUser
+    password = dbPassword
+}
+
+shadowJar {
+    dependsOn buildUI
+    manifest {
+        attributes 'Main-Class': "com.engage.expenses.Main"
+    }
+}
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.6.0'
+    compile 'org.projectlombok:lombok:1.16.16'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.8'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
+    compile 'com.google.guava:guava:22.0'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'org.flywaydb:flyway-core:4.2.0'
+    compile 'org.postgresql:postgresql:42.1.1'
+
+    testCompile 'junit:junit:4.12'
+}
