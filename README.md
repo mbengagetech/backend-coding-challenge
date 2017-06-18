@@ -2,6 +2,34 @@ Goal
 ====
 Produce a simple web-app backend to complement the supplied front-end code.
 
+Notes
+=====
+
+Build and run the application
+-----------------------------
+
+To build and run the backend requirements are:
+- Java8 SDK
+- PostgreSQL
+
+To create (dropping it before if already present) the db run:
+```bash
+./gradlew resetDb
+```
+To run the migrations run:
+```bash
+./gradlew flywayMigrate
+```
+To run all tests and build the project run:
+```bash
+./gradlew shadowJar
+```
+After a successful build, the app can be run with:
+```bash
+java -jar build/libs/expenses-1.0-SNAPSHOT-all.jar
+```
+Then you can start use the application from the url: [http//localhost:8080/](http//localhost:8080/)
+
 The task
 --------------
 

@@ -30,14 +30,20 @@ task buildUI(type: Copy) {
     into 'build/resources/main/static'
 }
 
+task resetDb(type: Exec) {
+    commandLine "bash", "-c", "dropdb --if-exists -U${dbUser} -h${dbHost} -p${dbPort} ${dbName}; \
+                createdb -U${dbUser} -h${dbHost} -p${dbPort} ${dbName}"
+}
+
 flyway {
-    url = dbUrl
+    url = "jdbc:postgresql://${dbHost}:${dbPort}/${dbName}"
     user = dbUser
     password = dbPassword
 }
 
 shadowJar {
     dependsOn buildUI
+    dependsOn test
     manifest {
         attributes 'Main-Class': "com.engage.expenses.Main"
     }
