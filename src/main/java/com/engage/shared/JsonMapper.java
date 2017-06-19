@@ -30,11 +30,7 @@ public class JsonMapper {
         }
     }
 
-    public <T> T fromJson(String json, Class<T> valueType) {
-        try {
-            return objectMapper.readValue(json, valueType);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public <T> T fromJson(String json, Class<T> valueType) throws IOException {
+        return objectMapper.readValue(json, valueType);
     }
 }

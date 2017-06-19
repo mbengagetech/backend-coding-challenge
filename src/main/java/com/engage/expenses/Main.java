@@ -4,6 +4,7 @@ import com.engage.expenses.controller.ExpensesController;
 import com.engage.expenses.repository.ExpensesRepository;
 import com.engage.shared.JsonMapper;
 import com.engage.shared.exception.ValidationException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import static spark.Spark.*;
 
@@ -31,7 +32,13 @@ public class Main {
 
         exception(ValidationException.class, (exception, req, res) -> {
             res.status(400);
+            res.type(APPLICATION_JSON);
             res.body(jsonMapper.toJson(exception.errors()));
+        });
+        exception(InvalidFormatException.class,  (exception, req, res) -> {
+            res.status(400);
+            res.type(APPLICATION_JSON);
+            res.body(jsonMapper.toJson(exception.getMessage()));
         });
     }
 }
