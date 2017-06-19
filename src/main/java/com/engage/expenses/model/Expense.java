@@ -42,6 +42,10 @@ public class Expense {
         this.reason = reason;
     }
 
+    public BigDecimal getVat() {
+        return Vat.vatFromTotal(amount);
+    }
+
     public Validation<Seq<String>, Expense> validate() {
         return validateDate(date)
                 .combine(validateAmount(amount))

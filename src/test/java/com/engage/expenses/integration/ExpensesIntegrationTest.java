@@ -81,6 +81,7 @@ public class ExpensesIntegrationTest {
                 .put("id", 2)
                 .put("date", "18/6/2017")
                 .put("amount", 12.0)
+                .put("vat", 2.0)
                 .put("reason", "Why not?").build());
 
         JSONObject actual = expensesJson.getJSONObject(0);
