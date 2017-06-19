@@ -51,7 +51,7 @@ public class ExpensesIntegrationTest {
 
     @Before
     public void setUp() {
-        Hibernate.runNativeQuery("select setval('expenses_id_seq', 1)");
+        Hibernate.runNativeQuery("DO $$ BEGIN PERFORM setval('expenses_id_seq', 1); END; $$;");
     }
 
     @After
@@ -102,13 +102,13 @@ public class ExpensesIntegrationTest {
         assertThat(res.getStatus()).isEqualTo(200);
         JSONObject expenseJson = res.getBody().getObject();
 
-        String expectedJson = jsonMapper.toJson(new Expense(2L, LocalDate.now(), BigDecimal.valueOf(8.2), "Reason"));
+        Expense expected = Expense.builder().id(2L).date(LocalDate.now()).amount(BigDecimal.valueOf(8.2)).reason("Reason").build();
+        String expectedJson = jsonMapper.toJson(expected);
         assertThat(expenseJson.similar(new JSONObject(expectedJson)));
 
         List<Expense> expenses = Hibernate.fetchWithSession(session ->
                 session.createQuery("from Expense where id = 2").getResultList());
 
-        Expense expected = new Expense(2L, LocalDate.now(), BigDecimal.valueOf(8.2), "Reason");
         assertThat(expenses).containsExactlyInAnyOrder(expected);
     }
 
