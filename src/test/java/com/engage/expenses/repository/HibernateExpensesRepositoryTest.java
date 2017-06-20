@@ -13,13 +13,13 @@ import java.util.List;
 import static com.engage.shared.Hibernate.runWithSession;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ExpensesRepositoryTest {
+public class HibernateExpensesRepositoryTest {
 
-    private ExpensesRepository repository;
+    private HibernateExpensesRepository repository;
 
     @Before
     public void setUp() {
-        repository = new ExpensesRepository();
+        repository = new HibernateExpensesRepository();
     }
 
     @After

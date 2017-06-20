@@ -2,9 +2,10 @@ package com.engage.expenses.integration;
 
 import com.engage.expenses.Main;
 import com.engage.expenses.api.Path;
+import com.engage.expenses.service.ExpensesService;
 import com.engage.expenses.controller.ExpensesController;
 import com.engage.expenses.model.Expense;
-import com.engage.expenses.repository.ExpensesRepository;
+import com.engage.expenses.repository.HibernateExpensesRepository;
 import com.engage.shared.Hibernate;
 import com.engage.shared.JsonMapper;
 import com.google.common.collect.ImmutableMap;
@@ -35,13 +36,10 @@ public class ExpensesIntegrationTest {
         jsonMapper = new JsonMapper();
         port(PORT);
 
+        HibernateExpensesRepository repository = new HibernateExpensesRepository();
         new Main(
-                new ExpensesController(
-                        jsonMapper,
-                        new ExpensesRepository(),
-                        new MockCurrencyResource()
-                )
-        );
+                new ExpensesController(jsonMapper, repository,
+                        new ExpensesService(repository, new MockCurrencyResource())));
     }
 
     @AfterClass
