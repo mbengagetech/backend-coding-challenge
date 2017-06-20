@@ -49,6 +49,7 @@ app.controller("ctrlExpenses", ["$rootScope", "$scope", "config", "restalchemy",
             restExpenses.post(_.merge($scope.newExpense, parseAmountWithCurrency())).then(function() {
                 // Reload new expenses list
                 loadExpenses();
+                $scope.newExpense = {};
             });
         }
     };
