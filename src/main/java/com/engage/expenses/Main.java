@@ -2,6 +2,7 @@ package com.engage.expenses;
 
 import com.engage.expenses.controller.ExpensesController;
 import com.engage.expenses.repository.ExpensesRepository;
+import com.engage.expenses.resource.FixerCurrencyResource;
 import com.engage.shared.JsonMapper;
 import com.engage.shared.exception.ValidationException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -23,7 +24,8 @@ public class Main {
         new Main(
                 new ExpensesController(
                         jsonMapper,
-                        new ExpensesRepository()
+                        new ExpensesRepository(),
+                        new FixerCurrencyResource()
                 ));
     }
 

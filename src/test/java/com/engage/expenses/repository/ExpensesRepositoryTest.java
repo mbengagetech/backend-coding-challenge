@@ -30,8 +30,8 @@ public class ExpensesRepositoryTest {
     @Test
     public void shouldFindAllExpenses() {
 
-        Expense expense = new Expense(LocalDate.now().minusDays(1), BigDecimal.valueOf(10.1), "Reason 1");
-        Expense anotherExpense = new Expense(LocalDate.now(), BigDecimal.valueOf(20.5), "Reason 2");
+        Expense expense = Expense.builder().date(LocalDate.now().minusDays(1)).amount(BigDecimal.valueOf(10.1)).reason("Reason 1").build();
+        Expense anotherExpense = Expense.builder().date(LocalDate.now()).amount(BigDecimal.valueOf(20.5)).reason("Reason 2").build();
 
         runWithSession(session -> {
             session.persist(expense);

@@ -38,7 +38,8 @@ public class ExpensesIntegrationTest {
         new Main(
                 new ExpensesController(
                         jsonMapper,
-                        new ExpensesRepository()
+                        new ExpensesRepository(),
+                        new MockCurrencyResource()
                 )
         );
     }
@@ -63,9 +64,9 @@ public class ExpensesIntegrationTest {
     public void shouldGetExpenses() throws UnirestException {
 
         Hibernate.runWithSession(session -> {
-            session.persist(
-                    new Expense(LocalDate.of(2017, 6, 18),
-                            BigDecimal.valueOf(12), "Why not?"));
+            Expense expense = Expense.builder().date(LocalDate.of(2017, 6, 18))
+                    .amount(BigDecimal.valueOf(12)).reason("Why not?").build();
+            session.persist(expense);
             session.flush();
             session.clear();
         });
@@ -92,9 +93,10 @@ public class ExpensesIntegrationTest {
     @Test
     public void shouldPostExpense() throws UnirestException {
         JSONObject requestBody = new JSONObject(ImmutableMap.builder()
-                .put("date", "18/06/2017")
-                .put("amount", "10.03")
-                .put("reason", "reason")
+                .put("date", "19/06/2017")
+                .put("amount", "10.00")
+                .put("currency", "EUR")
+                .put("reason", "Reason")
                 .build());
         HttpResponse<JsonNode> res = Unirest.post("http://localhost:" + PORT + Path.EXPENSES)
                 .body(requestBody.toString()).asJson();
@@ -102,9 +104,10 @@ public class ExpensesIntegrationTest {
         assertThat(res.getStatus()).isEqualTo(200);
         JSONObject expenseJson = res.getBody().getObject();
 
-        Expense expected = Expense.builder().id(2L).date(LocalDate.now()).amount(BigDecimal.valueOf(8.2)).reason("Reason").build();
+        Expense expected = Expense.builder().id(2L).date(LocalDate.of(2017, 6, 19))
+                .amount(BigDecimal.valueOf(8.75)).reason("Reason").build();
         String expectedJson = jsonMapper.toJson(expected);
-        assertThat(expenseJson.similar(new JSONObject(expectedJson)));
+        assertThat(expenseJson.similar(new JSONObject(expectedJson))).isTrue();
 
         List<Expense> expenses = Hibernate.fetchWithSession(session ->
                 session.createQuery("from Expense where id = 2").getResultList());
